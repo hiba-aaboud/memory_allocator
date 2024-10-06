@@ -57,6 +57,8 @@
   "C_Cpp_Runner.useLinkTimeOptimization": false,
   "C_Cpp_Runner.msvcSecureNoWarnings": false,
   "files.associations": {
-    "mem_alloc_fast_pool.h": "c"
+    "mem_alloc_fast_pool.h": "c",
+    "mem_alloc_types.h": "c",
+    "mem_alloc_standard_pool.h": "c"
   }
 }

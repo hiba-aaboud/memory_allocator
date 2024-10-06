@@ -1,0 +1,18 @@
+ALLOC at : 8 (50000 byte(s)) -- pool 3
+ALLOC at : 50024 (3000 byte(s)) -- pool 3
+ALLOC at : 53040 (4000 byte(s)) -- pool 3
+ALLOC at : 57056 (2000 byte(s)) -- pool 3
+ALLOC at : 59072 (1500 byte(s)) -- pool 3
+FREE  at : 50024 -- pool 3
+FREE  at : 57056 -- pool 3
+ALLOC at : 57056 (1500 byte(s)) -- pool 3
+ALLOC at : 50024 (2500 byte(s)) -- pool 3
+FREE  at : 57056 -- pool 3
+ALLOC at : 60588 (3000 byte(s)) -- pool 3
+FREE  at : 59072 -- pool 3
+FREE  at : 50024 -- pool 3
+ALLOC at : 50024 (2000 byte(s)) -- pool 3
+FREE  at : 60588 -- pool 3
+FREE  at : 50024 -- pool 3
+FREE  at : 53040 -- pool 3
+FREE  at : 8 -- pool 3
