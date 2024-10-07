@@ -234,39 +234,62 @@ size_t memory_get_allocated_block_size(void *addr)
     return res;
 }
 
+
 void print_mem_state(void)
 {
     for (int poolId = 0; poolId < NB_MEM_POOLS; poolId++)
     {
         mem_pool_t *pool = &mem_pools[poolId];
         printf("Memory display for Pool %d (%s):\n", poolId, pool->pool_name);
+        
+ 
         size_t pool_size = (char *)pool->end_addr - (char *)pool->start_addr;
         char memory_state[pool_size + 1];
         for (size_t i = 0; i < pool_size; i++) {
-            memory_state[i] = 'X'; // allocated block
+            memory_state[i] = 'X'; // Represent allocated block
         }
         memory_state[pool_size] = '\0'; 
-        mem_fast_free_block_t *free_block = (mem_fast_free_block_t *)pool->first_free;
-        while (free_block != NULL)
-        {
-            size_t block_start_index = (char *)free_block - (char *)pool->start_addr;
-            for (size_t i = 0; i < pool->max_req_size; i++)
+
+        if (pool->pool_type == FAST_POOL) {
+            mem_fast_free_block_t *free_block = (mem_fast_free_block_t *)pool->first_free;
+            while (free_block != NULL)
             {
-                if (block_start_index + i < pool_size)
+                size_t block_start_index = (char *)free_block - (char *)pool->start_addr;
+                for (size_t i = 0; i < pool->max_req_size; i++) // Update based on block size
                 {
-                    memory_state[block_start_index + i] = '.';  // free block
+                    if (block_start_index + i < pool_size)
+                    {
+                        memory_state[block_start_index + i] = '.';  // Free block representation
+                    }
                 }
+                free_block = free_block->next;  
             }
-            free_block = free_block->next;  
         }
+
+        else if (pool->pool_type == STANDARD_POOL) {
+           
+            mem_std_free_block_t *free_block = (mem_std_free_block_t *)pool->first_free;
+            while (free_block != NULL)
+            {
+                size_t block_start_index = (char *)free_block - (char *)pool->start_addr;
+                for (size_t i = 0; i < get_block_size(&free_block->header); i++)
+                {
+                    if (block_start_index + i < pool_size)
+                    {
+                        memory_state[block_start_index + i] = '.';  
+                    }
+                }
+                free_block = free_block->next;  
+            }
+        }
+
+        // Print the memory state
         for (size_t i = 0; i < pool_size; i += 64) 
         {
-            printf("%.64s\n", &memory_state[i]);
+            printf("%.64s\n", &memory_state[i]); // Print 64 characters per line
         }
         printf("\n");
     }
-    /* TO BE IMPLEMENTED */
-    printf("Please, implement me!\n");
 }
 
 void print_free_info(void *addr)
