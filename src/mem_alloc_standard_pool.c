@@ -37,7 +37,10 @@ void init_standard_pool(mem_pool_t *p, size_t size, size_t min_request_size, siz
     p->first_free = first_free;
 }
 
+void *mem_alloc_standard_pool(mem_pool_t *pool, size_t size)
+{
 
+<<<<<<< HEAD
 
 // void *mem_alloc_standard_pool(mem_pool_t *pool, size_t size)
 // {//first fit
@@ -195,6 +198,39 @@ void *mem_alloc_standard_pool(mem_pool_t *pool, size_t size)
                     current->next->prev = new;
                 }
             }
+=======
+    mem_std_free_block_t *current = (mem_std_free_block_t *)pool->first_free;
+    while (current != NULL)
+    {
+        if (is_block_free(&current->header) && get_block_size(&current->header) >= size)
+        {
+            size_t full_size = get_block_size(&current->header);
+            set_block_size(&current->header, size);
+            set_block_used(&current->header);
+
+            size_t remaining_size = full_size - size - 2 * sizeof(mem_std_block_header_footer_t);
+            printf("block size is %zu, allocated size: %zu\n ", full_size, size);
+            if (full_size > size)
+            {
+                printf("lets split and rem size is : %zu\n", remaining_size);
+                mem_std_free_block_t *new = (mem_std_free_block_t *)((char *)current + size + 2 * sizeof(mem_std_block_header_footer_t));
+                set_block_size(&new->header, remaining_size);
+                set_block_free(&new->header);
+                if (current->prev)
+                {
+                    current->prev->next = new;
+                    new->prev = current->prev;
+                }
+                else
+                    pool->first_free = new;
+
+                if (current->next)
+                {
+                    new->next = current->next;
+                    current->next->prev = new;
+                }
+            }
+>>>>>>> origin/master
             else
             {
                 if (current->prev)
@@ -214,7 +250,6 @@ void *mem_alloc_standard_pool(mem_pool_t *pool, size_t size)
             return (char *)current + sizeof(mem_std_block_header_footer_t);
     }
 
-    // No suitable block found
     return NULL;
 }
 
@@ -230,6 +265,10 @@ void mem_free_standard_pool(mem_pool_t *pool, void *addr)
     set_block_free(&block->header);
 
     mem_std_block_header_footer_t *footer = (mem_std_block_header_footer_t *)((char *)block + get_block_size(&block->header) + sizeof(mem_std_block_header_footer_t));
+<<<<<<< HEAD
+=======
+    printf("block to be freed: %lu, size: %zu\n", ((char *)block - (char *)pool->start_addr), get_block_size(&block->header));
+>>>>>>> origin/master
 
     if ((char *)footer >= (char *)pool->end_addr)
     {
@@ -237,7 +276,12 @@ void mem_free_standard_pool(mem_pool_t *pool, void *addr)
         return;
     }
 
+<<<<<<< HEAD
     *footer = block->header; 
+=======
+    *footer = block->header;
+
+>>>>>>> origin/master
     mem_std_free_block_t *current = pool->first_free;
     mem_std_free_block_t *prev = NULL;
 
@@ -260,17 +304,31 @@ void mem_free_standard_pool(mem_pool_t *pool, void *addr)
     }
     else
     {
+<<<<<<< HEAD
         pool->first_free = block; 
     }
 
     printf("Freed block at: %lu, size: %zu\n", ((char *)block - (char *)pool->start_addr), get_block_size(&block->header));
 
     current = pool->first_free;
+=======
+        pool->first_free = block;
+    }
+
+    printf("Freed block at: %lu, size: %zu\n", ((char *)block - (char *)pool->start_addr), get_block_size(&block->header));
+    
+    printf("Free list:\n");
+
+    current = (mem_std_free_block_t *)pool->first_free;
+>>>>>>> origin/master
     while (current)
     {
         if ((char *)current + get_block_size(&current->header) + 2 * sizeof(mem_std_block_header_footer_t) == (char *)current->next)
         {
+<<<<<<< HEAD
             //merge the blocks
+=======
+>>>>>>> origin/master
             set_block_size(&current->header, get_block_size(&current->header) + get_block_size(&current->next->header) + 2 * sizeof(mem_std_block_header_footer_t));
             current->next = current->next->next;
         }
@@ -280,8 +338,11 @@ void mem_free_standard_pool(mem_pool_t *pool, void *addr)
     }
 }
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> origin/master
 size_t mem_get_allocated_block_size_standard_pool(mem_pool_t *pool, void *addr)
 {
     mem_std_allocated_block_t* block = (mem_std_allocated_block_t*)addr; 
@@ -289,9 +350,12 @@ size_t mem_get_allocated_block_size_standard_pool(mem_pool_t *pool, void *addr)
     printf("%s:%d: Please, implement me!\n", __FUNCTION__, __LINE__);
     return size ;
 }
+<<<<<<< HEAD
 
 
 
 
 
 
+=======
+>>>>>>> origin/master
